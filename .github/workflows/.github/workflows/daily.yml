@@ -1,0 +1,25 @@
+name: Daily Wellfound Jobs Email
+
+on:
+  schedule:
+    - cron: '30 6 * * *'  # 12:00 PM IST = 06:30 UTC
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          pip install requests google-api-python-client google-auth
+      - name: Run script
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+        run: |
+          python fetch_and_email.py
